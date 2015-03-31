@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>
+	Secret splitting and reconstruction example 
+</title>
+<style type="text/css">
+*{
+	margin:0px;
+	padding:0px;
+}
+</style>
+</head>
+<body>
+<div id="text">
+</div>
+<!--<script type="text/javascript" src="./combinations.js"></script>-->
+<!--<script type="text/javascript" src="./permutations.js"></script>-->
+<script type="text/javascript" src="./sssiOnPlane.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+d=document;
+d.root='text';
+d.find=function(what)
+{
+	return document.getElementById(what);
+};
+d.echo=function(whaat)
+{
+	d.write(whaat+'<br/>');
+};
+d.write=function(whaaat)
+{
+	var hu=d.find(d.root);
+	hu.innerHTML+=whaaat;
+};
+d.testOnPlane=function()
+{
+	var intSecret=12345;
+	d.echo("secret: "+intSecret);
+	//hardcoded to split count 5 and reconstruct count 3, I don't have public domain algorithms for generation of combinations and permutations
+	var splitCount=5;
+	var reconstructCount=3;
+	var bfSplits=d.bfSplits(intSecret,splitCount,reconstructCount);
+	var aaa=0;
+	d.echo("parts split by sssiOnPlane:");
+	for(;aaa<splitCount;++aaa){
+		d.echo(bfSplits[0][aaa]);
+	}
+	d.echo("reconstructed secret:");
+	d.echo(d.reconstructOnPlane(bfSplits[0],reconstructCount));
+	d.write("They match! tried: ");
+	d.write(bfSplits[1]);
+	d.echo(" times!");
+};
+d.testOnPlane();
+//--><!]]>
+</script>
+</body>
+</html>
