@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>
+	Secret splitting and reconstruction tool 
+</title>
+<style type="text/css">
+*{
+	margin:0px;
+	padding:0px;
+}
+textarea{
+	width:250px;
+	height:150px;
+}
+</style>
+</head>
+<body>
+<div id="text">
+</div>
+<div id="formm">
+	<form>
+		<label>To split:</label>
+		<br/>
+		<textarea id="toSplit"></textarea>
+		<br/>
+		<input type="button" value="Split" onclick="d.split();"/>
+		<br/>
+		<div>Split 1:</div>
+		<div id="split0"></div>
+		<div>Split 2:</div>
+		<div id="split1"></div>
+		<div>Split 3:</div>
+		<div id="split2"></div>
+		<div>Split 4:</div>
+		<div id="split3"></div>
+		<div>Split 5:</div>
+		<div id="split4"></div>
+		<div>Tried:</div>
+		<div id="tried"></div>
+		<label>To reconstruct 1:</label>
+		<br/>
+		<textarea id="toReconstruct0"></textarea>
+		<br/>
+		<label>To reconstruct 2:</label>
+		<br/>
+		<textarea id="toReconstruct1"></textarea>
+		<br/>
+		<label>To reconstruct 3:</label>
+		<br/>
+		<textarea id="toReconstruct2"></textarea>
+		<br/>
+		<input type="button" value="Reconstruct" onclick="d.reconstruct();"/>
+		<br/>
+		<div id="reconstructedMessage"></div>
+	</form>
+</div>
+<script type="text/javascript" src="./sssiOnPlane.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+
+d.coefRange1=100;
+d.coefRange2=20;
+d.enableHighDistance=true;
+
+var ascii=[[32," "],[33,"!"],[34,"\""],[35,"#"],[36,"$"],[37,"%"],[38,"&"],[39,"'"],[40,"("],[41,")"],[42,"*"],[43,"+"],[44,","],[45,"-"],[46,"."],[47,"/"],[48,"0"],[49,"1"],[50,"2"],[51,"3"],[52,"4"],[53,"5"],[54,"6"],[55,"7"],[56,"8"],[57,"9"],[58,":"],[59,";"],[60,"<"],[61,"="],[62,">"],[63,"?"],[64,"@"],[65,"A"],[66,"B"],[67,"C"],[68,"D"],[69,"E"],[70,"F"],[71,"G"],[72,"H"],[73,"I"],[74,"J"],[75,"K"],[76,"L"],[77,"M"],[78,"N"],[79,"O"],[80,"P"],[81,"Q"],[82,"R"],[83,"S"],[84,"T"],[85,"U"],[86,"V"],[87,"W"],[88,"X"],[89,"Y"],[90,"Z"],[91,"["],[92,"\\"],[93,"]"],[94,"^"],[95,"_"],[96,"`"],[97,"a"],[98,"b"],[99,"c"],[100,"d"],[101,"e"],[102,"f"],[103,"g"],[104,"h"],[105,"i"],[106,"j"],[107,"k"],[108,"l"],[109,"m"],[110,"n"],[111,"o"],[112,"p"],[113,"q"],[114,"r"],[115,"s"],[116,"t"],[117,"u"],[118,"v"],[119,"w"],[120,"x"],[121,"y"],[122,"z"],[123,"{"],[124,"|"],[125,"}"],[126,"~"]];
+var asciiCount=ascii.length;
+
+d=document;
+d.root='text';
+d.find=function(what)
+{
+	return document.getElementById(what);
+};
+d.split=function()
+{
+	var val=d.find("toSplit").value;
+	var arr=val.split("");
+	var arrLen=arr.length;
+	var asc=[];
+	var iii=0;
+	for(;iii<arrLen;){
+		var kkk=0;
+		asc[iii]=32;
+		for(;kkk<asciiCount;){
+			if(arr[iii]===ascii[kkk][1]){
+				asc[iii]=ascii[kkk][0];
+			}
+			++kkk;
+		}
+		++iii;
+	}
+	var lll=0;
+	var res=[];
+	var tried=0;
+	for(;lll<arrLen;){
+		var bfs=d.bfSplits(asc[lll],5,3)
+		res[lll]=bfs[0];
+		tried+=bfs[1];
+		++lll;
+	}
+	var mmm=0;
+	for(;mmm<arrLen;){
+		var jjj=0;
+		for(;jjj<5;){
+			var foo=d.find("split"+jjj);
+			foo.innerHTML+="["+res[mmm][jjj][0]+","+res[mmm][jjj][1]+"]";
+			if(mmm<(arrLen-1)){
+				foo.innerHTML+=",";
+			}
+			++jjj;
+		}
+		++mmm;
+	}
+	d.find("tried").innerHTML=tried;
+};
+d.reconstruct=function()
+{
+	var rec0=d.find("toReconstruct0").value;
+	var rec1=d.find("toReconstruct1").value;
+	var rec2=d.find("toReconstruct2").value;
+
+	var arr=[];
+	arr[0]=JSON.parse("["+rec0+"]");
+	arr[1]=JSON.parse("["+rec1+"]");
+	arr[2]=JSON.parse("["+rec2+"]");
+	var len=arr[0].length;
+	var res=[];
+	var nnn=0;
+	for(;nnn<len;){
+		res[nnn]=d.reconstructOnPlane([arr[0][nnn],arr[1][nnn],arr[2][nnn]],3);
+		++nnn;
+	}
+	var ooo=0;
+	for(;ooo<len;){
+		var huu=" ";
+		var ppp=0;
+		for(;ppp<asciiCount;){
+			if(res[ooo]===ascii[ppp][0]){
+				huu=ascii[ppp][1];
+			}
+			++ppp;
+		}
+		d.find("reconstructedMessage").innerHTML+=huu;
+		++ooo;
+	}
+};
+//--><!]]>
+</script>
+</body>
+</html>
