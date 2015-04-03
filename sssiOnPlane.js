@@ -1,6 +1,7 @@
 d=document;
 d.coefRange1=100;
 d.coefRange2=100;
+d.enableHighDistance=false;
 d.count=function(someArray)
 {
 	return someArray.length;
@@ -42,6 +43,12 @@ d.splitOnPlane=function(whatToSplit,howManyPieces,threshold)
 				break;
 			}
 		}while(1);
+		//this makes the splits far enough from x coordinate = 0 (the secret)
+		if(d.enableHighDistance){
+			if(result[haa][0]>(0-(d.coefRange1/2))&&result[haa][0]<(d.coefRange1/2)){
+				continue;
+			}
+		}
 		++haa;
 	}
 	if(howManyPieces===1){
