@@ -112,6 +112,7 @@ d.reconstructOnPlane=function(whatToReconstruct,threshold)
 		result+=lagrangeFreeCoef[pieceTimesCoef]*whatToReconstruct[pieceTimesCoef][1];
 		++pieceTimesCoef;
 	}
+	result=d.round(result);
 	if(threshold%2){
 		return result;
 	}else{
